@@ -19,7 +19,6 @@
         <activity
             android:name=".TestModeActivity"
             android:screenOrientation="landscape"
-            android:configChanges="keyboardHidden|orientation"
             >
         </activity>
         <activity android:name=".SettingActivity">

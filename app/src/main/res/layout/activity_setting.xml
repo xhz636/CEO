@@ -40,6 +40,13 @@
             android:gravity="center_horizontal"
             android:layout_weight="1"
             />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="@dimen/color_rect_size"
+            android:text="@string/setting_color_show"
+            android:textSize="@dimen/setting_title_size"
+            android:gravity="center_horizontal"
+            />
     </TableRow>
 
     <TableRow>
@@ -73,6 +80,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/setting_color_check"
+            />
+        <View
+            android:id="@+id/view_black"
+            android:layout_height="@dimen/color_rect_size"
+            android:layout_width="@dimen/color_rect_size"
             />
     </TableRow>
 
@@ -108,6 +120,11 @@
             android:layout_weight="1"
             android:text="@string/setting_color_check"
             />
+        <View
+            android:id="@+id/view_white"
+            android:layout_height="@dimen/color_rect_size"
+            android:layout_width="@dimen/color_rect_size"
+            />
     </TableRow>
 
     <TableRow>
@@ -141,6 +158,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/setting_color_check"
+            />
+        <View
+            android:id="@+id/view_red"
+            android:layout_height="@dimen/color_rect_size"
+            android:layout_width="@dimen/color_rect_size"
             />
     </TableRow>
 
@@ -176,6 +198,11 @@
             android:layout_weight="1"
             android:text="@string/setting_color_check"
             />
+        <View
+            android:id="@+id/view_blue"
+            android:layout_height="@dimen/color_rect_size"
+            android:layout_width="@dimen/color_rect_size"
+            />
     </TableRow>
 
     <TableRow>
@@ -210,6 +237,11 @@
             android:layout_weight="1"
             android:text="@string/setting_color_check"
             />
+        <View
+            android:id="@+id/view_yellow"
+            android:layout_height="@dimen/color_rect_size"
+            android:layout_width="@dimen/color_rect_size"
+            />
     </TableRow>
 
     <TableRow>
@@ -243,6 +275,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/setting_color_check"
+            />
+        <View
+            android:id="@+id/view_green"
+            android:layout_height="@dimen/color_rect_size"
+            android:layout_width="@dimen/color_rect_size"
             />
     </TableRow>
 

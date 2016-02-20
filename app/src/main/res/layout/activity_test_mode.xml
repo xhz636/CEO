@@ -1,12 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <org.opencv.android.JavaCameraView
         android:id="@+id/camera_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/camera_width"
+        android:layout_height="@dimen/camera_height"
         />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/find_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_find_black"
+        android:layout_toRightOf="@id/camera_view"
+        android:layout_alignTop="@id/camera_view"
+        />
+
+    <Button
+        android:id="@+id/find_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_find_white"
+        android:layout_toRightOf="@id/camera_view"
+        android:layout_below="@id/find_black"
+        />
+
+    <Button
+        android:id="@+id/find_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_find_red"
+        android:layout_toRightOf="@id/camera_view"
+        android:layout_below="@id/find_white"
+        />
+
+    <Button
+        android:id="@+id/find_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_find_blue"
+        android:layout_toRightOf="@id/camera_view"
+        android:layout_below="@id/find_red"
+        />
+
+    <Button
+        android:id="@+id/find_yellow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_find_yellow"
+        android:layout_toRightOf="@id/camera_view"
+        android:layout_below="@id/find_blue"
+        />
+
+    <Button
+        android:id="@+id/find_green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_find_green"
+        android:layout_toRightOf="@id/camera_view"
+        android:layout_below="@id/find_yellow"
+        />
+
+</RelativeLayout>

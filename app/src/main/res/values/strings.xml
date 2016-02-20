@@ -15,5 +15,11 @@
     <string name="setting_color_yellow">黄</string>
     <string name="setting_color_green">绿</string>
     <string name="setting_color_check">确定</string>
-    <string name="setting_show_contour">显示轮廓</string>
+    <string name="setting_color_show">预览</string>
+    <string name="btn_find_black">黑色轮廓</string>
+    <string name="btn_find_white">白色轮廓</string>
+    <string name="btn_find_red">红色轮廓</string>
+    <string name="btn_find_blue">蓝色轮廓</string>
+    <string name="btn_find_yellow">黄色轮廓</string>
+    <string name="btn_find_green">绿色轮廓</string>
 </resources>
