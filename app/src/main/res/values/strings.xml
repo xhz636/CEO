@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">CEO</string>
+    <string name="btn_test_mode">测试模式</string>
+    <string name="btn_game_mode">比赛模式</string>
+    <string name="btn_setting">参数设置</string>
+    <string name="setting_title_color">颜色</string>
+    <string name="setting_title_R">R</string>
+    <string name="setting_title_G">G</string>
+    <string name="setting_title_B">B</string>
+    <string name="setting_title_check">确定</string>
+    <string name="setting_color_black">黑</string>
+    <string name="setting_color_white">白</string>
+    <string name="setting_color_red">红</string>
+    <string name="setting_color_blue">蓝</string>
+    <string name="setting_color_yellow">黄</string>
+    <string name="setting_color_green">绿</string>
+    <string name="setting_color_check">确定</string>
+    <string name="setting_show_contour">显示轮廓</string>
+</resources>
