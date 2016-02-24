@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -14,16 +18,18 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.List;
 
-public class TestModeActivity extends Activity implements CvCameraViewListener2{
+public class TestModeActivity extends Activity implements CvCameraViewListener2, OnTouchListener{
 
     private Mat mRgba;
     private Mat mSpectrum;
@@ -35,12 +41,23 @@ public class TestModeActivity extends Activity implements CvCameraViewListener2{
     private CameraBridgeViewBase mOpenCvCameraView;
 
     private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+
     private Button Find_Black;
     private Button Find_White;
     private Button Find_Red;
     private Button Find_Blue;
     private Button Find_Yellow;
     private Button Find_Green;
+
+    private int Get_Flag = Get_Done;
+    private static final int Get_Black = 1;
+    private static final int Get_White = 2;
+    private static final int Get_Red = 3;
+    private static final int Get_Blue = 4;
+    private static final int Get_Yellow = 5;
+    private static final int Get_Green = 6;
+    private static final int Get_Done = 7;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,24 +158,58 @@ public class TestModeActivity extends Activity implements CvCameraViewListener2{
         }
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.test_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.get_balck :
+                Get_Flag = Get_Black;
+                break;
+            case R.id.get_white :
+                Get_Flag = Get_White;
+                break;
+            case R.id.get_red :
+                Get_Flag = Get_Red;
+                break;
+            case R.id.get_blue :
+                Get_Flag = Get_Blue;
+                break;
+            case R.id.get_yellow :
+                Get_Flag = Get_Yellow;
+                break;
+            case R.id.get_green :
+                Get_Flag = Get_Green;
+                break;
+            case R.id.get_done :
+                Get_Flag = Get_Done;
+                break;
+        }
+        return true;
+    }
+
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
+                case LoaderCallbackInterface.SUCCESS :
                     mOpenCvCameraView.enableView();
-                } break;
-                default:
-                {
+                    mOpenCvCameraView.setOnTouchListener(TestModeActivity.this);
+                    break;
+                default :
                     super.onManagerConnected(status);
-                } break;
+                    break;
             }
         }
     };
@@ -178,7 +229,7 @@ public class TestModeActivity extends Activity implements CvCameraViewListener2{
         mBlobColorRgba = new Scalar(255);
         mBlobColorHsv = new Scalar(255);
         SPECTRUM_SIZE = new Size(200, 64);
-        CONTOUR_COLOR = new Scalar(255,0,0,255);
+        CONTOUR_COLOR = new Scalar(255, 0, 0, 255);
         mDetector = new ColorBlobDetector();
     }
 
@@ -201,4 +252,84 @@ public class TestModeActivity extends Activity implements CvCameraViewListener2{
         return new Scalar(pointMatHsv.get(0, 0));
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(Get_Flag == Get_Done)
+            return false;
+        int cols = mRgba.cols();
+        int rows = mRgba.rows();
+        int xOffset = (mOpenCvCameraView.getWidth() - cols) / 2;
+        int yOffset = (mOpenCvCameraView.getHeight() - rows) / 2;
+        int x = (int)event.getX() - xOffset;
+        int y = (int)event.getY() - yOffset;
+        if ((x < 0) || (y < 0) || (x > cols) || (y > rows))
+            return false;
+        Rect touchedRect = new Rect();
+        touchedRect.x = (x>4) ? x-4 : 0;
+        touchedRect.y = (y>4) ? y-4 : 0;
+        touchedRect.width = (x+4 < cols) ? x + 4 - touchedRect.x : cols - touchedRect.x;
+        touchedRect.height = (y+4 < rows) ? y + 4 - touchedRect.y : rows - touchedRect.y;
+        Mat touchedRegionRgba = mRgba.submat(touchedRect);
+        Mat touchedRegionHsv = new Mat();
+        Imgproc.cvtColor(touchedRegionRgba, touchedRegionHsv, Imgproc.COLOR_RGB2HSV_FULL);
+        mBlobColorHsv = Core.sumElems(touchedRegionHsv);
+        int pointCount = touchedRect.width*touchedRect.height;
+        for (int i = 0; i < mBlobColorHsv.val.length; i++)
+            mBlobColorHsv.val[i] /= pointCount;
+        mBlobColorRgba = converScalarHsv2Rgba(mBlobColorHsv);
+        mDetector.setHsvColor(mBlobColorHsv);
+        Imgproc.resize(mDetector.getSpectrum(), mSpectrum, SPECTRUM_SIZE);
+        touchedRegionRgba.release();
+        touchedRegionHsv.release();
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = pref.edit();
+        switch (Get_Flag) {
+            case Get_Black :
+                editor.putInt("Black_R", (int)mBlobColorRgba.val[0]);
+                editor.putInt("Black_G", (int)mBlobColorRgba.val[1]);
+                editor.putInt("Black_B", (int)mBlobColorRgba.val[2]);
+                editor.commit();
+                break;
+            case Get_White :
+                editor.putInt("White_R", (int)mBlobColorRgba.val[0]);
+                editor.putInt("White_G", (int)mBlobColorRgba.val[1]);
+                editor.putInt("White_B", (int)mBlobColorRgba.val[2]);
+                editor.commit();
+                break;
+            case Get_Red :
+                editor.putInt("Red_R", (int)mBlobColorRgba.val[0]);
+                editor.putInt("Red_G", (int)mBlobColorRgba.val[1]);
+                editor.putInt("Red_B", (int)mBlobColorRgba.val[2]);
+                editor.commit();
+                break;
+            case Get_Blue :
+                editor.putInt("Blue_R", (int)mBlobColorRgba.val[0]);
+                editor.putInt("Blue_G", (int)mBlobColorRgba.val[1]);
+                editor.putInt("Blue_B", (int)mBlobColorRgba.val[2]);
+                editor.commit();
+                break;
+            case Get_Yellow :
+                editor.putInt("Yellow_R", (int)mBlobColorRgba.val[0]);
+                editor.putInt("Yellow_G", (int)mBlobColorRgba.val[1]);
+                editor.putInt("Yellow_B", (int)mBlobColorRgba.val[2]);
+                editor.commit();
+                break;
+            case Get_Green :
+                editor.putInt("Green_R", (int)mBlobColorRgba.val[0]);
+                editor.putInt("Green_G", (int)mBlobColorRgba.val[1]);
+                editor.putInt("Green_B", (int)mBlobColorRgba.val[2]);
+                editor.commit();
+                break;
+            case Get_Done :
+                break;
+        }
+        return false;
+    }
+
+    private Scalar converScalarHsv2Rgba(Scalar hsvColor) {
+        Mat pointMatRgba = new Mat();
+        Mat pointMatHsv = new Mat(1, 1, CvType.CV_8UC3, hsvColor);
+        Imgproc.cvtColor(pointMatHsv, pointMatRgba, Imgproc.COLOR_HSV2RGB_FULL, 4);
+        return new Scalar(pointMatRgba.get(0, 0));
+    }
 }
